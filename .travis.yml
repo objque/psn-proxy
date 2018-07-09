@@ -1,0 +1,12 @@
+script:
+- openssl aes-256-cbc -K $encrypted_539db3ab63f2_key -iv $encrypted_539db3ab63f2_iv
+  -in travis_key.enc -out /tmp/travis_key -d
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/travis_key
+- ssh-add /tmp/travis_key
+- docker login -u $REGISTRY_USER -p $REGISTRY_PASS
+- docker build -t $REGISTRY_REPO .
+- docker push $REGISTRY_REPO
+- ssh -o "StrictHostKeyChecking no" $HOST_USER@$HOST "(docker stop $CONTAINER_NAME || true) && (docker rm $CONTAINER_NAME || true)"
+- ssh -o "StrictHostKeyChecking no" $HOST_USER@$HOST docker pull $REGISTRY_REPO
+- ssh -o "StrictHostKeyChecking no" $HOST_USER@$HOST docker run -d -p 3310:3310 --name $CONTAINER_NAME $REGISTRY_REPO
