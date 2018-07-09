@@ -13,5 +13,9 @@ def show(id):
     return json.dumps(client.resolve(id=id))
 
 
+def create_app(*args, **kwargs):
+    return app
+
+
 if __name__ == '__main__':
     app.run("localhost", 8080)
