@@ -8,7 +8,7 @@ class ValkyrieAPIClient(object):
             "id": included["id"],
             "type": included["type"],
             "name": included["attributes"]["name"],
-            "release": included["attributes"]["release-date"],
+            "released": included["attributes"]["release-date"],
             "poster": included["attributes"]["thumbnail-url-base"],
             "score": included["attributes"]["star-rating"],
             "prices": included["attributes"]["skus"][0]["prices"],
