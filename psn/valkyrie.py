@@ -23,6 +23,12 @@ class ValkyrieAPIClient(object):
             })
         return discounts
 
+    def _get_actual_price_value(self, price):
+        # game hasn't discount
+        if not price["strikethrough-price"]:
+            return price["actual-price"]["value"] / 100
+        return price["strikethrough-price"]["value"] / 100
+
     def _fix_resolve_answer(self, json):
         included = json["included"][0]
         price = included["attributes"]["skus"][0]["prices"]["non-plus-user"]
@@ -33,7 +39,7 @@ class ValkyrieAPIClient(object):
             "poster": included["attributes"]["thumbnail-url-base"],
             "type": included["type"],
             "released": included["attributes"]["release-date"],
-            "price": price["actual-price"]["value"] / 100,
+            "price": self._get_actual_price_value(price),
             "rate": {
                 "total": included["attributes"]["star-rating"]["total"],
                 "value": included["attributes"]["star-rating"]["score"],
