@@ -12,7 +12,7 @@ class ValkyrieAPIClient(object):
             "poster": included["attributes"]["thumbnail-url-base"],
             "type": included["type"],
             "released": included["attributes"]["release-date"],
-            "price": price["strikethrough-price"]["value"] / 100,
+            "price": price["actual-price"]["value"] / 100,
             "rate": {
                 "total": included["attributes"]["star-rating"]["total"],
                 "value": included["attributes"]["star-rating"]["score"],
