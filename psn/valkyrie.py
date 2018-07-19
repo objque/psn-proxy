@@ -2,6 +2,27 @@ import requests
 
 
 class ValkyrieAPIClient(object):
+    def _get_discounts(self, usual, plus):
+        discounts = []
+        if usual["discount-percentage"] > 0 and not usual["is-plus"]:
+            discounts.append({
+                "is_plus": usual["is-plus"],
+                "value": usual["actual-price"]["value"] / 100,
+                "percentage": usual["discount-percentage"],
+                "since": usual["availability"]["start-date"],
+                "till": usual["availability"]["end-date"],
+            })
+
+        if plus["discount-percentage"] > 0 and plus["is-plus"]:
+            discounts.append({
+                "is_plus": plus["is-plus"],
+                "value": plus["actual-price"]["value"] / 100,
+                "percentage": plus["discount-percentage"],
+                "since": plus["availability"]["start-date"],
+                "till": plus["availability"]["end-date"],
+            })
+        return discounts
+
     def _fix_resolve_answer(self, json):
         included = json["included"][0]
         price = included["attributes"]["skus"][0]["prices"]["non-plus-user"]
@@ -17,22 +38,7 @@ class ValkyrieAPIClient(object):
                 "total": included["attributes"]["star-rating"]["total"],
                 "value": included["attributes"]["star-rating"]["score"],
             },
-            "discounts": [
-                {
-                    "is_plus": price["is-plus"],
-                    "value": price["actual-price"]["value"] / 100,
-                    "percentage": price["discount-percentage"],
-                    "since": price["availability"]["start-date"],
-                    "till": price["availability"]["end-date"],
-                },
-                {
-                    "is_plus": plus_price["is-plus"],
-                    "value": plus_price["actual-price"]["value"] / 100,
-                    "percentage": plus_price["discount-percentage"],
-                    "since": plus_price["availability"]["start-date"],
-                    "till": plus_price["availability"]["end-date"],
-                },
-            ]
+            "discounts": self._get_discounts(price, plus_price)
         }
 
     def resolve(self, id):
