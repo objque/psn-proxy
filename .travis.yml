@@ -9,4 +9,4 @@ script:
 - docker push $REGISTRY_REPO
 - ssh -o "StrictHostKeyChecking no" $HOST_USER@$HOST "(docker stop $CONTAINER_NAME || true) && (docker rm $CONTAINER_NAME || true)"
 - ssh -o "StrictHostKeyChecking no" $HOST_USER@$HOST docker pull $REGISTRY_REPO
-- ssh -o "StrictHostKeyChecking no" $HOST_USER@$HOST docker run -d -p 3310:3310 --name $CONTAINER_NAME $REGISTRY_REPO
+- ssh -o "StrictHostKeyChecking no" $HOST_USER@$HOST docker run -d -p 127.0.0.1:3310:3310 --name $CONTAINER_NAME $REGISTRY_REPO
